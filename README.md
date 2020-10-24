@@ -7,6 +7,8 @@ Library that solves discrete math operations of the group Zn, provides both as c
 ## Program Usage
 Describe how to install the calculator and its commands.
 
+> ***Note***: The program will ***always create*** a `db.json` file in the directory you execute the program, this file is aimed to save your last ~30 commands and the Zn group (default n=10) set on your program.
+
 ### Install from source
 
 0. Make sure to have python > v3.6 installed.
