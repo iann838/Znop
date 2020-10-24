@@ -25,7 +25,7 @@ Describe how to install the calculator and its commands.
 
 ### Install as executable
 
-1. Find the latest executable in this repositories Releases.
+1. Find the latest executable in this repository's [Releases](https://github.com/paaksing/Znop/releases).
 2. Download it to local machine 
 3. Execute it.
 
