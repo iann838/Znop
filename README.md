@@ -11,7 +11,7 @@ Describe how to install the calculator and its commands.
 
 0. Make sure to have python > v3.6 installed.
 1. Clone this repository to local machine.
-2. Open bash or cmd and `cd` in to the directory
+2. Open bash or cmd and `cd` into the directory
 3. Run `python .`
 
 ### Install as executable
