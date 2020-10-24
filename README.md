@@ -10,14 +10,22 @@ Describe how to install the calculator and its commands.
 ### Install from source
 
 0. Make sure to have python > v3.6 installed.
-1. Clone this repository to local machine.
-2. Open bash or cmd and `cd` into the directory
-3. Run `python .`
+1. `$ git clone https://github.com/paaksing/Znop.git`
+2. `$ cd Znop`
+3. `$ python setup.py install`
+4. `$ znop`.
+
+### Install using pip
+
+0. Make sure to have python > v3.6 installed and `pip` installed.
+1. `$ pip install znop`.
+2. `$ znop`.
 
 ### Install as executable
 
 1. Find the latest executable in this repositories Releases.
-2. Download it to local machine and execute it.
+2. Download it to local machine 
+3. Execute it.
 
 ### Commands
 
