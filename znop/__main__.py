@@ -11,15 +11,14 @@ help_info = """
     help                | Usage of this program
     quit                | Quit this program"""
 
-if __name__ == '__main__':
-    db_filepath = Path('db.json')
-    if not db_filepath.is_file():
-        with open(db_filepath, "w+") as db_file:
-            json.dump({"n": 10, "history": []}, db_file, indent=4)
+db_filepath = Path('db.json')
+if not db_filepath.is_file():
+    with open(db_filepath, "w+") as db_file:
+        json.dump({"n": 10, "history": []}, db_file, indent=4)
 
-    db = json.load(open(db_filepath))
+db = json.load(open(db_filepath))
 
-    n = db["n"]
+n = db["n"]
 
 def input_save(prompt: str):
     input_str = input(prompt)
@@ -91,8 +90,10 @@ def run():
             elif input_vals[0] == "quit":
                 quit_app()
             print_save("Invalid command, input 'help' for help")
+            continue
         if len(input_vals) != 2:
             print_save("Invalid command, input 'help' for help")
+            continue
         instruct, payload = input_vals
         try:
             instructions[instruct](payload)
