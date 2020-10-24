@@ -276,7 +276,7 @@ class ZnExpression:
                     if char == "*" and opened == 0:
                         inner_terms.append(term_to_append)
                         term_to_append = ""
-                    if char != "*":
+                    if char == "*" and opened > 0 or char != "*":
                         term_to_append += char
                 if term_to_append:
                     inner_terms.append(term_to_append)

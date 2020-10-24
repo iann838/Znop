@@ -43,5 +43,10 @@ setup(
     packages=find_packages(exclude=("test")),
     zip_safe=True,
     install_requires=install_requires,
-    include_package_data=True
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'znop=__main__:run',
+        ],
+    },
 )

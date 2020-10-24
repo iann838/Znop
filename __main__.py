@@ -11,15 +11,15 @@ help_info = """
     help                | Usage of this program
     quit                | Quit this program"""
 
+if __name__ == '__main__':
+    db_filepath = Path('db.json')
+    if not db_filepath.is_file():
+        with open(db_filepath, "w+") as db_file:
+            json.dump({"n": 10, "history": []}, db_file, indent=4)
 
-db_filepath = Path('db.json')
-if not db_filepath.is_file():
-    with open(db_filepath, "w+") as db_file:
-        json.dump({"n": 10, "history": []}, db_file, indent=4)
+    db = json.load(open(db_filepath))
 
-db = json.load(open(db_filepath))
-
-n = db["n"]
+    n = db["n"]
 
 def input_save(prompt: str):
     input_str = input(prompt)
@@ -78,24 +78,28 @@ instructions = {
     "solve": solve_eq,
 }
 
-for line in db["history"]:
-    print(line)
+def run():
+    for line in db["history"]:
+        print(line)
 
-while True:
-    input_vals = input_save(f"\n(n={n}) ").split()
-    if len(input_vals) == 1:
-        if input_vals[0] == "help":
-            print_save(help_info)
-            continue
-        elif input_vals[0] == "quit":
-            quit_app()
-        print_save("Invalid command, input 'help' for help")
-    if len(input_vals) != 2:
-        print_save("Invalid command, input 'help' for help")
-    instruct, payload = input_vals
-    try:
-        instructions[instruct](payload)
-    except KeyError:
-        print_save("Invalid command, input 'help' for help")
-    except Exception as e:
-        print_save("Unknown err: ", e)
+    while True:
+        input_vals = input_save(f"\n(n={n}) ").split()
+        if len(input_vals) == 1:
+            if input_vals[0] == "help":
+                print_save(help_info)
+                continue
+            elif input_vals[0] == "quit":
+                quit_app()
+            print_save("Invalid command, input 'help' for help")
+        if len(input_vals) != 2:
+            print_save("Invalid command, input 'help' for help")
+        instruct, payload = input_vals
+        try:
+            instructions[instruct](payload)
+        except KeyError:
+            print_save("Invalid command, input 'help' for help")
+        except Exception as e:
+            print_save("Unknown err: ", e)
+
+if __name__ == '__main__':
+    run()
