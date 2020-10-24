@@ -25,9 +25,9 @@ All payload passed to the commands should strictly match this regex: `[a-zA-Z0-9
 
 | Command | Description |
 | --- | --- |
-| set n=<setnumber>   | Set the set number of Z |
-| reduce <expression> | Reduce a Zn expression or equation |
-| solve <equation>    | Solve an one-dimensional Zn equation |
+| set n=`<setnumber>`   | Set the set number of Z |
+| reduce `<expression>` | Reduce a Zn expression or equation |
+| solve `<equation>`    | Solve an one-dimensional Zn equation |
 | help                | Usage of this program |
 | quit                | Quit this program |
 
@@ -54,13 +54,12 @@ Describe usage and API of this library.
 - Python 3.6 (due to requirements of f-strings)
 - Install using `pip install znop`
 
-### API
+### API Documentation
 This library consists of 3 modules: `core` and `exceptions`. All objects in this library can be "copied" or "reinstantiated" by doing `eval(repr(obj))` where obj is an `znop` object. `str()` will return the string representation of the object and `repr()` will return the string representation of the object in python syntax.
 
-#### `znop.core.ZnTerm`
-```python
-from znop.core import ZnTerm
-```
+Import the object from the respective modules e.g.: `from znop.core import ZnEquation`
+
+#### znop.core.ZnTerm
 Represents a term in the group of ZnTerm
 
 - `__init__(n: int, raw: str)`: Create an instance of ZnTerm, arguments: n (set number), raw (raw string of term, e.g. `'2x'`).
@@ -69,10 +68,7 @@ Represents a term in the group of ZnTerm
 
 - `eval(values: Dict[str, int])`: Evaluate the variables in the term, receives a mapping of variable name to value e.g. `{'x': 6}`, and return a new ZnTerm.
 
-#### `znop.core.ZnExpression`
-```python
-from znop.core import ZnExpression
-```
+#### znop.core.ZnExpression
 - `__init__(n: int, raw: str)`: Create an instance of ZnExpression, arguments: n (set number), raw (raw string of expression, e.g. `'2x+x-3'`). This expression is automatically reduced to its simplest form.
 
 - `__mul__, __eq__`: This objects supports `*` between ZnExpressions and ZnTerms by doing distributive, It also supports equality comparison `==` between ZnExpressions.
@@ -81,24 +77,21 @@ from znop.core import ZnExpression
 
 - `eval(values: Dict[str, int])`: Evaluate the variables in the expression, receives a mapping of variable name to value e.g. `{'x': 6}`, and return a new ZnExpression.
 
-#### `znop.core.ZnEquation`
-```python
-from znop.core import ZnEquation
-```
+#### znop.core.ZnEquation
 - `__init__(n: int, raw: str)`: Create an instance of ZnEquation, arguments: n (set number), raw (raw string of equation, e.g. `'2x^2+3=0'`). This equation is automatically reduced to its simplest form.
 
 - `reduce()`: Reduce the equation to the simplest form, this function is automatically called on instantiation.
 
 - `solve()`: Solve the equation by returning a list of solutions (ints). If the equation cannot be solved, then `ResolveError` will be raised.
 
-#### `znop.exceptions.ZSetError`
+#### znop.exceptions.ZSetError
 Operation between ZnInt of different Z set.
 
-#### `znop.exceptions.ZVarError`
+#### znop.exceptions.ZVarError
 Operation between ZnInt of different variables outside products.
 
-#### `znop.exceptions.ParseError`
+#### znop.exceptions.ParseError
 Indicates a parsing error, reason will be stated when `ParseError` is thrown.
 
-#### `znop.exceptions.ResolveError`
+#### znop.exceptions.ResolveError
 Could not resolve equation.
