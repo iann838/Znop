@@ -1,8 +1,15 @@
+import sys
 import json
 from pathlib import Path
 from znop.core import ZnEquation, ZnExpression
 from znop.exceptions import ParseError, ResolveError
 
+
+db_filepath = ""
+
+db = {}
+
+n = 10
 
 help_info = """
     set n=<setnumber>   | Set the set number of Z
@@ -10,15 +17,6 @@ help_info = """
     solve <equation>    | Solve an one-dimensional Zn equation
     help                | Usage of this program
     quit                | Quit this program"""
-
-db_filepath = Path('db.json')
-if not db_filepath.is_file():
-    with open(db_filepath, "w+") as db_file:
-        json.dump({"n": 10, "history": []}, db_file, indent=4)
-
-db = json.load(open(db_filepath))
-
-n = db["n"]
 
 def input_save(prompt: str):
     input_str = input(prompt)
@@ -38,7 +36,7 @@ def quit_app():
         db["history"] = db["history"][-200:]
     with open(db_filepath, "w+") as db_file:
         json.dump(db, db_file, indent=4)
-    exit()
+    sys.exit(0)
 
 def set_n(payload: str):
     if payload[:2] != "n=" or len(payload) < 3:
@@ -78,6 +76,18 @@ instructions = {
 }
 
 def run():
+    global db_filepath
+    db_filepath = Path('db.json')
+    if not db_filepath.is_file():
+        with open(db_filepath, "w+") as db_file:
+            json.dump({"n": 10, "history": []}, db_file, indent=4)
+
+    global db
+    db = json.load(open(db_filepath))
+
+    global n
+    n = db["n"]
+
     for line in db["history"]:
         print(line)
 
