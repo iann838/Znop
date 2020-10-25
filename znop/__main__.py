@@ -77,7 +77,7 @@ instructions = {
 
 def run():
     global db_filepath
-    db_filepath = Path('db.json')
+    db_filepath = Path('znop_db.json')
     if not db_filepath.is_file():
         with open(db_filepath, "w+") as db_file:
             json.dump({"n": 10, "history": []}, db_file, indent=4)
