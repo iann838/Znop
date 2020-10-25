@@ -20,7 +20,7 @@ if sys.version_info.major != 3 and sys.version_info.minor < 6:
 
 setup(
     name="znop",
-    version="0.1.2", 
+    version="0.1.3", 
     author="Paaksing",
     author_email="paaksingtech@gmail.com",
     url="https://github.com/paaksing/Znop",
