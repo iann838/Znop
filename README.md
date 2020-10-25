@@ -7,7 +7,7 @@ Library that solves discrete math operations of the group Zn, provides both as c
 ## Program Usage
 Describe how to install the calculator and its commands.
 
-> ***Note***: This program will ***always create a `db.json` file if it doesn't exist*** in the directory you execute the program, this file is aimed to save your last ~30 commands and the Zn group (default n=10) set on your program.
+> ***Note***: This program will ***always create a `znop_db.json` file if it doesn't exist*** in the directory you execute the program, this file is aimed to save your last ~30 commands and the Zn group (default n=10) set on your program.
 
 ### Install from source
 
