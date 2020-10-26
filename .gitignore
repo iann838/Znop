@@ -133,4 +133,5 @@ dmypy.json
 
 # znop
 db.json
+znop_db.json
 *.exe

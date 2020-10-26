@@ -75,7 +75,7 @@ instructions = {
     "solve": solve_eq,
 }
 
-def run():
+def main():
     global db_filepath
     db_filepath = Path('znop_db.json')
     if not db_filepath.is_file():
@@ -110,7 +110,4 @@ def run():
         except KeyError:
             print_save("Invalid command, input 'help' for help")
         except Exception as e:
-            print_save("Unknown err: ", e)
-
-if __name__ == '__main__':
-    run()
+            print_save("Unknown err:", e)

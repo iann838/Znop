@@ -5,6 +5,10 @@ from typing import List, Union, Tuple, Dict
 from .exceptions import ParseError, ZSetError, ZVarError, ResolveError
 
 
+def istr(obj):
+    return obj.__istr__()
+
+
 class ZnTerm:
     """Integer representation in Zn"""
     n: int
@@ -12,6 +16,18 @@ class ZnTerm:
     coef: int
     powers: List[int]
     variables: List[str]
+    superscripts = {
+        "0": "\u2070",
+        "1": "\u00b9",
+        "2": "\u00b2",
+        "3": "\u00b3",
+        "4": "\u2074",
+        "5": "\u2075",
+        "6": "\u2076",
+        "7": "\u2077",
+        "8": "\u2078",
+        "9": "\u2079",
+    }
 
     def __init__(self, n: int, raw: str):
         self.n = n
@@ -20,16 +36,13 @@ class ZnTerm:
         self.validate_neutral_result()
 
     def __str__(self):
-        return str(self.coef if self.coef != 1 or len(self.factors) == 0 else '') + ''.join(self.factors)
+        return str(self.coef if self.coef != 1 or len(self.factors) == 0 else '') + ''.join(self.str_factors)
 
     def __repr__(self):
         return f"ZnTerm({self.n}, '{self.coef if self.coef != 1 or len(self.factors) == 0 else ''}{''.join(self.factors)}')"
 
-    @property
-    def factors(self):
-        facts = [var + (f'^{self.powers[ind]}' if self.powers[ind] > 1 else '') for ind, var in enumerate(self.variables)]
-        sorted_facts = sorted(facts, key=lambda x: x[0])
-        return tuple(sorted_facts)
+    def __istr__(self):
+        return str(self.coef if self.coef != 1 or len(self.factors) == 0 else '') + ''.join(self.factors)
 
     def __add__(self, znterm: "ZnTerm") -> "ZnTerm":
         self.validate_n(znterm)
@@ -88,6 +101,18 @@ class ZnTerm:
         if self.coef == znterm.coef:
             return self.validate_n(znterm, False) and self.validate_variables(znterm, False)
         return False
+
+    @property
+    def factors(self):
+        facts = [var + (f'^{self.powers[ind]}' if self.powers[ind] > 1 else '') for ind, var in enumerate(self.variables)]
+        sorted_facts = sorted(facts, key=lambda x: x[0])
+        return tuple(sorted_facts)
+
+    @property
+    def str_factors(self):
+        facts = [var + (f"{''.join([self.superscripts[pwer] for pwer in str(self.powers[ind])])}" if self.powers[ind] > 1 else "") for ind, var in enumerate(self.variables)]
+        sorted_facts = sorted(facts, key=lambda x: x[0])
+        return tuple(sorted_facts)
 
     def parse(self) -> Tuple:
         """Parse this term"""
@@ -215,7 +240,10 @@ class ZnExpression:
         self.reduce()
 
     def __repr__(self):
-        return f"ZnExpression({self.n}, '{str(self)}')"
+        return f"ZnExpression({self.n}, '{'+'.join([istr(term) for term in self.terms])}')"
+
+    def __istr__(self):
+        return '+'.join([istr(term) for term in self.terms])
 
     def __str__(self):
         return '+'.join([str(term) for term in self.terms])
@@ -264,16 +292,40 @@ class ZnExpression:
                 term = term[1:]
             if "(" not in term and "*" not in term:
                 zn_terms.append(ZnTerm(n, term))
-            elif "*" in term:
+            elif "*" in term or "^" in term:
                 inner_terms = []
                 opened = 0
                 term_to_append = ""
-                for char in term:
+                powering_expr = False
+                power = ""
+                for ind, char in enumerate(term):
+                    if powering_expr:
+                        power_done = False
+                        if char.isdigit():
+                            power += char
+                        elif char not in "+-*":
+                            raise ParseError('Invalid expression powering')
+                        elif not power:
+                            raise ParseError('Missing power after power sign')
+                        else:
+                            power_done = True
+                        if ind == len(term) - 1:
+                            power_done = True
+                        if power_done:
+                            inner_terms += [term_to_append]*int(power)
+                            term_to_append = ""
+                            powering_expr = False
+                            power = ""
+                        if not power_done or ind == len(term) - 1:
+                            continue
                     if char == "(":
                         opened += 1
                     elif char == ")":
                         opened -= 1
-                    if char == "*" and opened == 0:
+                    if ind > 0 and char == "^" and term[ind-1] == ")" and opened == 0:
+                        powering_expr = True
+                        continue
+                    if char == "*" and opened == 0 and term_to_append:
                         inner_terms.append(term_to_append)
                         term_to_append = ""
                     if char == "*" and opened > 0 or char != "*":
@@ -293,6 +345,8 @@ class ZnExpression:
     def validate_parenthesis(self):
         """Validate parenthesis of raw expression"""
         raw = self.raw
+        if "()" in raw:
+            raise ParseError('Blank parenthesis')
         opened = 0
         closed = 0
         for ind, char in enumerate(raw):
@@ -356,7 +410,7 @@ class ZnEquation:
         return f"{str(self.left)}={str(self.right)}"
 
     def __repr__(self):
-        return f"ZnEquation({self.n}, '{str(self)}')"
+        return f"ZnEquation({self.n}, '{istr(self.left)}={istr(self.right)}')"
 
     def validate_var(self) -> str:
         """Validate and find an unique variable to target"""
